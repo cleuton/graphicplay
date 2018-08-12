@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+(c) 2013 by Cleuton Sampaio. 
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Base WebGL</title>
+  </head>
+ 
+  <body onload="carregarWebGL()">
+    <canvas id="webgl" width="480" height="320">
+   		Use um navegador compatível com HTML 5.
+   		<br/>Veja em <a href="http://html5test.com/">html5test.com</a>
+    </canvas>
+    <script src="gl-matrix.js"></script>
+    <script src="initgl.js"></script>
+    <script src="codigo.js"></script>
+
+	<script id="vertex-shader" type="x-shader/x-vertex">
+    	attribute vec3 aVertexPosition;
+    	attribute vec4 aVertexColor;
+	    uniform mat4 uMVMatrix;
+    	uniform mat4 uPMatrix;
+    	varying lowp vec4 vColor;
+	    void main(void) {
+    	    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    	    vColor = aVertexColor;
+    	}
+	</script>     
+
+	<script id="fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+    	varying lowp vec4 vColor;
+	    void main(void) {
+    	    gl_FragColor = vColor;
+    	}
+	</script>
+   
+  </body>
+</html>

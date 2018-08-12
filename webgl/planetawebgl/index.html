@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--
+(c) 2013 by Cleuton Sampaio.
+
+***********************************
+ESTA PÁGINA ABRE ARQUIVOS!!!!
+O Google Chrome não deixa.
+Crie um WebServer local e copie para
+ele. Pode ser o Apache tomcat
+***********************************
+ 
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Base WebGL</title>
+  </head>
+ 
+  <body onload="carregarWebGL()">
+    <canvas id="webgl" width="480" height="320">
+   		Use um navegador compatível com HTML 5.
+   		<br/>Veja em <a href="http://html5test.com/">html5test.com</a>
+    </canvas>
+    <script src="gl-matrix.js"></script>
+    <script src="initgl.js"></script>
+    <script src="esfera.js"></script>
+    <script src="codigo.js"></script>
+
+	<script id="vertex-shader" type="x-shader/x-vertex">
+    	attribute vec3 aVertexPosition;
+    	attribute vec4 aVertexNormal;
+    	attribute vec2 aTextureCoord;
+	    uniform mat4 uMVMatrix;
+    	uniform mat4 uPMatrix;
+    	uniform mat4 uNormalMatrix;
+    	
+		varying vec2 vTextureCoord;
+		varying vec3 vShading;
+    	
+	    void main(void) {
+	    	vTextureCoord = aTextureCoord;
+	    	highp vec3 uLightColor = vec3(0.60, 0.60, 0.60);
+        	highp vec3 uLightDirection = vec3(0.9, 0.99, 0.99);
+        	highp vec3 ambientColor = vec3(0.1, 0.1, 0.1);
+	    
+    	    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    	    
+    	    vec4 xnormal = uNormalMatrix * aVertexNormal;
+    	    float dotNormal = max(dot(uLightDirection, normalize(xnormal.xyz)), 0.0);
+    	    vShading = ambientColor + uLightColor * dotNormal;
+    	}
+	</script>     
+
+	<script id="fragment-shader" type="x-shader/x-fragment">
+    	precision mediump float;
+    	uniform sampler2D uTextureUnit;
+    	varying vec2 vTextureCoord;
+    	varying vec3 vShading;
+
+	    void main(void) {
+	    	vec4 textureColor = texture2D(uTextureUnit, vec2(vTextureCoord.s, vTextureCoord.t));
+        	gl_FragColor = vec4(textureColor.rgb * vShading, textureColor.a);
+    	}
+	</script>
+   
+  </body>
+</html>
